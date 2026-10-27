@@ -1,0 +1,804 @@
+/* Escuta Itanhaém - Design System 
+   Nova Identidade Visual: Preto (#111111 / #050505), Branco (#FFFFFF) e Amarelo Institucional (#FFC629)
+   Efeitos Liquid Glass inspirados na linguagem estética do iOS e macOS
+*/
+
+:root {
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+
+  /* Nova Paleta Oficial Escuta Itanhaém */
+  --color-primary: #FFC629;            /* Amarelo institucional */
+  --color-primary-hover: #F5BC18;      /* Amarelo hover */
+  --color-primary-soft: #FFE082;       /* Amarelo claro */
+  --color-primary-surface: #FFF8DF;    /* Amarelo suave para fundos */
+  --color-primary-glow: rgba(255, 198, 41, 0.35);
+
+  --color-black: #111111;              /* Preto principal */
+  --color-black-deep: #050505;         /* Preto profundo */
+  --color-black-surface: #171717;      /* Preto para superfícies escuras */
+  --color-black-card: #1F1F1F;         /* Preto para cards escuros */
+  --color-white: #FFFFFF;              /* Branco */
+
+  --color-surface: #F5F5F5;            /* Cinza para superfícies */
+  --color-surface-elevated: #FAFAFA;   /* Cinza muito suave */
+  --color-text-secondary: #6B7280;     /* Cinza para textos secundários */
+  --color-text-muted: #9CA3AF;         /* Cinza suave */
+  --color-border: #E5E7EB;             /* Bordas claras */
+  --color-border-subtle: #F0F2F5;
+  --color-border-dark: rgba(255, 255, 255, 0.12); /* Bordas escuras */
+  --color-border-dark-strong: rgba(255, 255, 255, 0.22);
+
+  /* Semantic Colors (Preservadas com clareza para acessibilidade) */
+  --emerald: #10B981;
+  --emerald-bg: rgba(16, 185, 129, 0.12);
+  --emerald-border: rgba(16, 185, 129, 0.3);
+  --ocean: #0284C7;
+  --ocean-bg: rgba(2, 132, 199, 0.12);
+  --ocean-border: rgba(2, 132, 199, 0.3);
+  --amber: #F59E0B;
+  --amber-bg: rgba(245, 158, 11, 0.12);
+  --purple: #8B5CF6;
+  --purple-bg: rgba(139, 92, 246, 0.12);
+  --destructive: #EF4444;
+  --destructive-bg: rgba(239, 68, 68, 0.12);
+
+  /* Tokens de Compatibilidade Retroativa (Elimina o laranja antigo sem quebrar código) */
+  --bronze: var(--color-primary);
+  --bronze-soft: var(--color-primary-soft);
+  --bronze-bg: rgba(255, 198, 41, 0.12);
+  --bronze-border: rgba(255, 198, 41, 0.35);
+  --bronze-light: var(--color-primary-soft);
+  --bronze-dark: #D49E08;
+  --ink: var(--color-black);
+  --ink-light: #222222;
+  --background: #FFFFFF;
+  --bg: #FFFFFF;
+  --foreground: var(--color-black);
+  --card: #FFFFFF;
+  --card-foreground: var(--color-black);
+  --popover: #FFFFFF;
+  --popover-foreground: var(--color-black);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-black);
+  --secondary: var(--color-surface);
+  --secondary-foreground: var(--color-black);
+  --muted: var(--color-surface);
+  --muted-foreground: var(--color-text-secondary);
+  --accent: var(--color-primary);
+  --accent-foreground: var(--color-black);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+
+  /* Liquid Glass Tokens */
+  --glass-light: rgba(255, 255, 255, 0.72);
+  --glass-light-card: rgba(255, 255, 255, 0.85);
+  --glass-dark: rgba(17, 17, 17, 0.75);
+  --glass-dark-card: rgba(20, 20, 20, 0.85);
+  --glass-border-light: rgba(255, 255, 255, 0.65);
+  --glass-border-dark: rgba(255, 255, 255, 0.12);
+  --glass-yellow: rgba(255, 198, 41, 0.12);
+  --glass-yellow-border: rgba(255, 198, 41, 0.35);
+
+  /* Dimensões & Raios */
+  --radius-card: 20px;
+  --radius-control: 14px;
+  --radius: 1.25rem;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 26px;
+  --radius-3xl: 32px;
+  --radius-full: 9999px;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FFC629 0%, #FFE082 100%);
+  --gradient-bronze: linear-gradient(135deg, #FFC629 0%, #F5BC18 100%);
+  --gradient-dark: linear-gradient(145deg, #171717 0%, #0A0A0A 100%);
+  --gradient-deep-black: linear-gradient(180deg, #050505 0%, #111111 100%);
+  --gradient-ink: linear-gradient(145deg, #171717 0%, #0A0A0A 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.48) 100%);
+  --gradient-glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.02) 100%);
+  --gradient-fade: linear-gradient(180deg, #F5F5F5 0%, #FFFFFF 100%);
+
+  /* Apple-inspired Elevation & Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --shadow-elegant: 0 20px 48px -12px rgba(0, 0, 0, 0.14);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --shadow-glass-dark: 0 16px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-yellow: 0 12px 32px -8px rgba(255, 198, 41, 0.45);
+  --shadow-bronze: 0 12px 32px -8px rgba(255, 198, 41, 0.45);
+  --shadow-dark: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+  /* iOS / macOS Spring Timing */
+  --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-ui: 220ms ease;
+  --spring: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: #FFC629 #0D0D0D;
+}
+
+/* Custom Scrollbar — Fundo escuro e barra amarela */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D0D0D;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFC629;
+  border-radius: 9999px;
+  border: 2px solid #0D0D0D;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFE082;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #F5BC18;
+}
+
+::-webkit-scrollbar-corner {
+  background: #0D0D0D;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography Helpers */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.text-yellow,
+.text-bronze {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+/* Layout Utilities */
+.container-px {
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .container-px {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-px {
+    padding-inline: 3.5rem;
+  }
+}
+
+.max-w-7xl {
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+.max-w-4xl {
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   LIQUID GLASS SYSTEM (Apple iOS/macOS inspired)
+   ========================================================================== */
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius-card);
+}
+
+.liquid-glass-dark {
+  background: rgba(17, 17, 17, 0.78);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-card);
+  color: #FFFFFF;
+}
+
+.liquid-glass-accent {
+  background: rgba(255, 198, 41, 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 198, 41, 0.35);
+  box-shadow:
+    0 8px 24px rgba(255, 198, 41, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border-radius: var(--radius-control);
+}
+
+/* Fallback para navegadores sem suporte a backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) {
+  .liquid-glass {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+  }
+  .liquid-glass-dark {
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  .liquid-glass-accent {
+    background: var(--color-primary-surface);
+    border: 1px solid var(--color-primary-soft);
+  }
+}
+
+/* ==========================================================================
+   PILL BADGES & DOT INDICATORS
+   ========================================================================== */
+
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-black);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: var(--transition);
+}
+
+.pill-badge.dark {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.pill-badge.accent {
+  color: var(--color-black);
+  background: var(--color-primary-surface);
+  border-color: rgba(255, 198, 41, 0.4);
+}
+
+.dot-yellow,
+.dot-bronze {
+  height: 0.55rem;
+  width: 0.55rem;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(255, 198, 41, 0.75);
+  animation: pulse-subtle 2.5s infinite ease-in-out;
+}
+
+.dot-emerald {
+  height: 0.55rem;
+  width: 0.55rem;
+  border-radius: 50%;
+  background-color: var(--emerald);
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+}
+
+/* ==========================================================================
+   CARDS & CONTAINERS
+   ========================================================================== */
+
+.swiftui-card {
+  background-color: var(--card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.swiftui-card:hover {
+  border-color: rgba(255, 198, 41, 0.45);
+  box-shadow: var(--shadow-elegant);
+  transform: translateY(-2px);
+}
+
+.swiftui-card-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-glass);
+  transition: var(--transition);
+}
+
+.swiftui-card-glass:hover {
+  border-color: rgba(255, 198, 41, 0.55);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   SEGMENTED CONTROLS (Apple style)
+   ========================================================================== */
+
+.swiftui-segmented-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--color-surface);
+  padding: 0.3rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+}
+
+.swiftui-segmented-btn {
+  padding: 0.45rem 1.15rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.swiftui-segmented-btn:hover {
+  color: var(--color-black);
+}
+
+.swiftui-segmented-btn.active {
+  background-color: #FFFFFF;
+  color: var(--color-black);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   BUTTON SYSTEM (Preto, Branco e Amarelo Institucional)
+   ========================================================================== */
+
+/* Botão Primário: Amarelo institucional com texto preto e contraste ideal */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  color: var(--color-black);
+  padding: 0.55rem 0.65rem 0.55rem 1.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  box-shadow: var(--shadow-yellow);
+  transition: var(--transition);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-primary .btn-icon-wrapper {
+  display: grid;
+  place-items: center;
+  height: 2.3rem;
+  width: 2.3rem;
+  border-radius: 50%;
+  background-color: var(--color-black);
+  color: #FFFFFF;
+  transition: var(--transition);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 16px 36px -6px rgba(255, 198, 41, 0.55);
+  transform: translateY(-2px);
+}
+
+.btn-primary:hover .btn-icon-wrapper {
+  background-color: #000000;
+  transform: rotate(45deg);
+}
+
+/* Botão Dark / Preto Profundo */
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-black);
+  color: #FFFFFF;
+  padding: 0.55rem 0.65rem 0.55rem 1.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+.btn-dark:active {
+  transform: scale(0.97);
+}
+
+.btn-dark .btn-icon-wrapper {
+  display: grid;
+  place-items: center;
+  height: 2.3rem;
+  width: 2.3rem;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-black);
+  transition: var(--transition);
+}
+
+.btn-dark:hover {
+  background-color: #000000;
+  border-color: rgba(255, 198, 41, 0.6);
+  box-shadow: var(--shadow-elegant);
+  transform: translateY(-2px);
+}
+
+.btn-dark:hover .btn-icon-wrapper {
+  transform: rotate(45deg);
+}
+
+/* Botão Secundário */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: var(--radius-full);
+  background-color: #FFFFFF;
+  color: var(--color-black);
+  padding: 0.8rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-black);
+  transform: translateY(-2px);
+}
+
+/* Botão Amarelo / Legado btn-bronze atualizado para amarelo institucional */
+.btn-bronze,
+.btn-yellow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  color: var(--color-black);
+  padding: 0.55rem 0.65rem 0.55rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  box-shadow: var(--shadow-yellow);
+  transition: var(--transition);
+}
+
+.btn-bronze:active,
+.btn-yellow:active {
+  transform: scale(0.97);
+}
+
+.btn-bronze .btn-icon-wrapper,
+.btn-yellow .btn-icon-wrapper {
+  display: grid;
+  place-items: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 50%;
+  background-color: var(--color-black);
+  color: #FFFFFF;
+  transition: var(--transition);
+}
+
+.btn-bronze:hover,
+.btn-yellow:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 16px 36px -6px rgba(255, 198, 41, 0.55);
+}
+
+.btn-bronze:hover .btn-icon-wrapper,
+.btn-yellow:hover .btn-icon-wrapper {
+  transform: rotate(45deg);
+  background-color: #000000;
+}
+
+/* ==========================================================================
+   ANIMATIONS & MICRO-INTERACTIONS
+   ========================================================================== */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Respeito a prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   FORM ELEMENTS
+   ========================================================================== */
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: #FFFFFF;
+  color: var(--color-black);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 198, 41, 0.25);
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  color: var(--color-black);
+}
+
+.form-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.3rem;
+}
+
+/* ==========================================================================
+   CATEGORY GRID CARDS
+   ========================================================================== */
+
+.category-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.category-card:active {
+  transform: scale(0.98);
+}
+
+.category-card:hover {
+  background-color: var(--color-black);
+  color: #FFFFFF;
+  border-color: var(--color-black);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-elegant);
+}
+
+.category-card .card-icon {
+  color: var(--color-primary);
+  transition: var(--transition);
+}
+
+.category-card:hover .card-icon {
+  color: var(--color-primary-soft);
+  transform: scale(1.08);
+}
+
+.category-card .arrow-icon {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  opacity: 0;
+  transition: var(--transition);
+  transform: translate(-4px, 4px);
+}
+
+.category-card:hover .arrow-icon {
+  opacity: 1;
+  transform: translate(0, 0);
+  color: var(--color-primary);
+}
+
+/* ==========================================================================
+   MODALS WITH APPLE LIQUID GLASS BLUR
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 5, 5, 0.68);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background-color: #FFFFFF;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-dark);
+  max-width: 44rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: fade-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ==========================================================================
+   INSET LIST ITEM & SCROLLBAR
+   ========================================================================== */
+
+.swiftui-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: var(--transition);
+}
+
+.swiftui-list-item:hover {
+  background: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
