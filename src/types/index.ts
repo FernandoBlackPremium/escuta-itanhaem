@@ -45,6 +45,15 @@ export interface YouthOpportunityItem {
   statusNotice: string;
 }
 
+export type TriageStatus =
+  | 'Recebida'
+  | 'Em triagem'
+  | 'Em análise'
+  | 'Necessita de informações adicionais'
+  | 'Convertida em proposta'
+  | 'Encaminhada ao órgão competente'
+  | 'Concluída ou arquivada';
+
 export interface ConsultationResponse {
   id: string;
   protocol: string;
@@ -58,6 +67,8 @@ export interface ConsultationResponse {
   optionalContactName?: string;
   optionalContactInfo?: string;
   lgpdConsent: boolean;
+  status?: TriageStatus;
+  internalNotes?: string;
   createdAt: string;
 }
 

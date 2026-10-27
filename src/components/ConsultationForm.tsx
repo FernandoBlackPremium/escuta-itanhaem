@@ -46,13 +46,14 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
   useEffect(() => {
     if (preselectedTheme) {
       const match = CIVIC_AREAS.find((a) => a.id === preselectedTheme);
-      if (match && !topThreeIssues.includes(match.title)) {
-        if (topThreeIssues.length < 3) {
-          setTopThreeIssues((prev) => [...prev, match.title]);
-        }
-        if (!priorityIssue) {
-          setPriorityIssue(match.title);
-        }
+      if (match) {
+        setTopThreeIssues((prev) => {
+          if (!prev.includes(match.title) && prev.length < 3) {
+            return [...prev, match.title];
+          }
+          return prev;
+        });
+        setPriorityIssue((prev) => prev || match.title);
       }
     }
   }, [preselectedTheme]);
@@ -94,7 +95,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
     }
   };
 
-  const validate = (): boolean => {
+  const validateForm = (): { isValid: boolean; errors: Record<string, string> } => {
     const errs: Record<string, string> = {};
 
     if (topThreeIssues.length === 0) {
@@ -114,7 +115,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
     }
 
     setErrors(errs);
-    return Object.keys(errs).length === 0;
+    return { isValid: Object.keys(errs).length === 0, errors: errs };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -126,8 +127,9 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
       return;
     }
 
-    if (!validate()) {
-      const firstErrorKey = Object.keys(errors)[0];
+    const validation = validateForm();
+    if (!validation.isValid) {
+      const firstErrorKey = Object.keys(validation.errors)[0];
       const el = document.getElementById(`form-${firstErrorKey}`);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;

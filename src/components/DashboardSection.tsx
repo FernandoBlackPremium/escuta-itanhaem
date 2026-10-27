@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart3, Users, MapPin, AlertCircle, RefreshCw, MessageSquareQuote } from 'lucide-react';
-import { getAggregatedStats } from '../services/storage';
+import { getAggregatedStats, fetchLivePublicStats } from '../services/storage';
 
 export const DashboardSection: React.FC = () => {
   const [stats, setStats] = useState(() => getAggregatedStats());
+  const [liveData, setLiveData] = useState<{ isLive: boolean; totalResponses: number; recentVoices: any[] }>({
+    isLive: false,
+    totalResponses: stats.totalResponses,
+    recentVoices: stats.sampleCitizenVoices
+  });
   const [lastRefresh, setLastRefresh] = useState<string>(() =>
     new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
   );
 
-  const refreshData = () => {
+  const loadData = async () => {
     setStats(getAggregatedStats());
+    const live = await fetchLivePublicStats();
+    if (live.isLive) {
+      setLiveData(live);
+    }
     setLastRefresh(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const refreshData = () => {
+    loadData();
   };
 
   return (
@@ -108,13 +125,13 @@ export const DashboardSection: React.FC = () => {
           </div>
           <div>
             <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
-              Total de Contribuições Válidas
+              Total de Contribuições Registradas
             </div>
             <div className="font-display" style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--color-black)', lineHeight: 1.1, marginTop: '0.15rem' }}>
-              {stats.totalResponses}
+              {liveData.isLive ? liveData.totalResponses : stats.totalResponses}
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--emerald)', fontWeight: 600, marginTop: '0.2rem' }}>
-              {stats.localCount > 0 ? `+${stats.localCount} registradas nesta sessão local` : 'Dados em tempo real'}
+              {liveData.isLive ? '✓ Conexão direta ao banco Supabase' : stats.localCount > 0 ? `+${stats.localCount} nesta sessão local` : 'Dados em tempo real'}
             </div>
           </div>
         </div>

@@ -52,15 +52,28 @@ select
     concrete_example,
     proposed_solution,
     youth_opportunities,
+    status,
     created_at
 from public.consultation_responses;
 
--- 6. Política Administrativa (Apenas administradores autenticados têm acesso total aos dados de contato para convite em rodas de conversa)
+-- 6. Políticas Administrativas (Apenas administradores autenticados)
 create policy "Acesso exclusivo de administradores autenticados para leitura completa"
     on public.consultation_responses
     for select
     to authenticated
     using (true);
+
+create policy "Permissao de triagem e atualizacao para administradores autenticados"
+    on public.consultation_responses
+    for update
+    to authenticated
+    using (true)
+    with check (true);
+
+-- 7. Migrações e Colunas de Gestão (Executar caso a tabela já exista)
+alter table public.consultation_responses
+    add column if not exists status text default 'Recebida',
+    add column if not exists internal_notes text;
 
 -- 7. Tabela de Propostas Municipais em Estudo
 create table if not exists public.proposals (

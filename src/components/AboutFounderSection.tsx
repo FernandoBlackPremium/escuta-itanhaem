@@ -41,10 +41,10 @@ export const AboutFounderSection: React.FC = () => {
             </h2>
 
             <p style={{ marginTop: '1.25rem', fontSize: '1.05rem', color: 'var(--color-text-secondary)', lineHeight: 1.65 }}>
-              Sou <strong>Henrique Costa</strong>, desenvolvedor de software, especialista em produtos digitais e morador
-              apaixonado por Itanhaém. Ao longo dos últimos anos acompanhando o dia a dia da cidade, percebi um padrão que
-              se repete: muitas decisões sobre o município são pensadas distantes da realidade concreta das ruas e das
-              famílias nos bairros.
+              Sou <strong>Fernando Costa</strong> (Fernando Henrique Cardoso Costa), desenvolvedor de software,
+              especialista em produtos digitais e morador de Itanhaém. Ao longo dos últimos anos acompanhando o dia a dia
+              da cidade, percebi um padrão que se repete: muitas decisões sobre o município são pensadas distantes da
+              realidade concreta das ruas e das famílias nos bairros.
             </p>
 
             <p style={{ marginTop: '1rem', fontSize: '1rem', color: 'var(--color-text-secondary)', lineHeight: 1.65 }}>
@@ -91,7 +91,7 @@ export const AboutFounderSection: React.FC = () => {
                 <BrandMark size={52} />
                 <div>
                   <h3 className="font-display" style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-black)' }}>
-                    Henrique Costa<span style={{ color: 'var(--color-primary)' }}>.</span>
+                    Fernando Costa<span style={{ color: 'var(--color-primary)' }}>.</span>
                   </h3>
                   <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
                     Idealizador do Escuta Itanhaém · Tecnologia & Inovação Cívica

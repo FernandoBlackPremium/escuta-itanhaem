@@ -4,9 +4,10 @@ import { BrandMark } from './BrandMark';
 
 interface FooterProps {
   onOpenPrivacyModal: () => void;
+  onOpenAdminModal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenPrivacyModal }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenPrivacyModal, onOpenAdminModal }) => {
   return (
     <>
       {/* High-Impact Pre-Footer Civic CTA Banner (Black Deep container with Liquid Yellow Halos) */}
@@ -287,6 +288,16 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacyModal }) => {
               >
                 Privacidade
               </button>
+              {onOpenAdminModal && (
+                <button
+                  type="button"
+                  onClick={onOpenAdminModal}
+                  style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 'inherit', opacity: 0.8 }}
+                  title="Acesso da Coordenação e Gestão Cívica"
+                >
+                  Gestão Cívica
+                </button>
+              )}
               <a href="#top" style={{ color: 'var(--foreground)', fontWeight: 600, textDecoration: 'none' }}>
                 Voltar ao topo ↑
               </a>

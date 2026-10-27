@@ -12,9 +12,12 @@ import { Footer } from './components/Footer';
 import { PrivacyModal } from './components/PrivacyModal';
 import { FloatingCTA } from './components/FloatingCTA';
 
+import { AdminModal } from './components/AdminModal';
+
 export const App: React.FC = () => {
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState<boolean>(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState<boolean>(false);
   const [submissionCount, setSubmissionCount] = useState<number>(0);
 
   const handleSelectTheme = (themeId: string) => {
@@ -66,7 +69,10 @@ export const App: React.FC = () => {
       </main>
 
       {/* Seção H: Rodapé com Banner CTA */}
-      <Footer onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)} />
+      <Footer
+        onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
+        onOpenAdminModal={() => setIsAdminModalOpen(true)}
+      />
 
       {/* Floating CTA Button */}
       <FloatingCTA />
@@ -75,6 +81,12 @@ export const App: React.FC = () => {
       <PrivacyModal
         isOpen={isPrivacyModalOpen}
         onClose={() => setIsPrivacyModalOpen(false)}
+      />
+
+      {/* Admin Triage & Management Modal */}
+      <AdminModal
+        isOpen={isAdminModalOpen}
+        onClose={() => setIsAdminModalOpen(false)}
       />
     </div>
   );

@@ -65,7 +65,7 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
             </h4>
             <p style={{ color: 'var(--muted-foreground)' }}>
               O projeto <strong>Escuta Itanhaém</strong> atua como controlador dos dados coletados na consulta pública,
-              sob a coordenação técnica e cívica de Henrique Costa. Canal de contato do encarregado:{' '}
+              sob a coordenação técnica e cívica de Fernando Costa (Fernando Henrique Cardoso Costa). Canal de contato do encarregado:{' '}
               <a href="mailto:privacidade@escutaitanhaem.org.br" style={{ color: 'var(--color-black)', fontWeight: 700, textDecoration: 'underline' }}>
                 privacidade@escutaitanhaem.org.br
               </a>.

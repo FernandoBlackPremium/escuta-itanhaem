@@ -24,6 +24,10 @@ export function isSupabaseConnected(): boolean {
   return !!supabase;
 }
 
+export function getSupabaseClient(): SupabaseClient | null {
+  return supabase;
+}
+
 export function generateProtocolNumber(): string {
   const timestamp = Date.now().toString().slice(-4);
   const random = Math.floor(1000 + Math.random() * 9000);
@@ -41,7 +45,7 @@ export async function submitConsultation(
     createdAt: new Date().toISOString()
   };
 
-  // 1. Try Supabase if configured
+  // 1. If Supabase is configured, enforce central remote persistence
   if (supabase) {
     try {
       const { error } = await supabase.from('consultation_responses').insert([
@@ -62,23 +66,35 @@ export async function submitConsultation(
       ]);
 
       if (error) {
-        console.warn('Erro ao gravar no Supabase, salvando localmente como fallback:', error);
-      } else {
-        // Also cache locally for immediate offline dashboard update
-        saveLocally(submission);
-        return { success: true, protocol };
+        console.error('Falha de persistência no banco Supabase:', error);
+        // CRITICAL P0 AUDIT FIX: Do NOT give a false confirmation to the resident!
+        return {
+          success: false,
+          protocol: '',
+          error: `Não foi possível registrar sua contribuição no servidor de dados (${error.message || 'Erro de autorização ou integridade'}). Por favor, tente novamente.`
+        };
       }
+
+      // Record successfully persisted in Supabase
+      saveLocally(submission);
+      return { success: true, protocol };
     } catch (err: unknown) {
-      console.warn('Exceção na chamada Supabase:', err);
+      console.error('Exceção de rede na persistência Supabase:', err);
+      const msg = err instanceof Error ? err.message : 'Falha de comunicação com o servidor';
+      return {
+        success: false,
+        protocol: '',
+        error: `Erro de conexão ao enviar contribuição: ${msg}. Verifique sua internet e tente novamente.`
+      };
     }
   }
 
-  // 2. LocalStorage Fallback (Resilient offline-first persistence)
+  // 2. Only in pure offline/local development without Supabase keys
   try {
     saveLocally(submission);
     return { success: true, protocol };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Falha ao salvar resposta.';
+    const message = err instanceof Error ? err.message : 'Falha ao salvar resposta localmente.';
     return { success: false, protocol: '', error: message };
   }
 }
@@ -99,6 +115,46 @@ export function getLocalSubmissions(): ConsultationResponse[] {
   }
 }
 
+export async function fetchLivePublicStats(): Promise<{
+  isLive: boolean;
+  totalResponses: number;
+  recentVoices: Array<{ neighborhood: string; issue: string; quote: string; date: string }>;
+}> {
+  if (supabase) {
+    try {
+      const { data, count, error } = await supabase
+        .from('vw_public_consultation_aggregated')
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      if (!error && typeof count === 'number') {
+        const voices = (data || []).map((row: any) => ({
+          neighborhood: row.neighborhood || 'Itanhaém (Geral)',
+          issue: row.priority_issue || 'Demanda Cívica',
+          quote: row.concrete_example,
+          date: new Date(row.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+        }));
+
+        return {
+          isLive: true,
+          totalResponses: count,
+          recentVoices: voices.length > 0 ? voices : INITIAL_DEMO_STATS.sampleCitizenVoices
+        };
+      }
+    } catch (err) {
+      console.warn('Erro ao consultar visão pública agregada:', err);
+    }
+  }
+
+  const local = getLocalSubmissions();
+  return {
+    isLive: false,
+    totalResponses: INITIAL_DEMO_STATS.totalResponses + local.length,
+    recentVoices: INITIAL_DEMO_STATS.sampleCitizenVoices
+  };
+}
+
 export function getAggregatedStats() {
   const localItems = getLocalSubmissions();
   const totalResponses = INITIAL_DEMO_STATS.totalResponses + localItems.length;
@@ -113,4 +169,71 @@ export function getAggregatedStats() {
     sampleCitizenVoices: INITIAL_DEMO_STATS.sampleCitizenVoices,
     recentLocalSubmissions: localItems.slice(0, 5)
   };
+}
+
+export async function fetchAdminSubmissions(): Promise<{
+  data: ConsultationResponse[];
+  error?: string;
+}> {
+  if (!supabase) {
+    return { data: getLocalSubmissions() };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('consultation_responses')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return { data: [], error: error.message };
+    }
+
+    const mapped: ConsultationResponse[] = (data || []).map((r: any) => ({
+      id: r.id,
+      protocol: r.protocol,
+      neighborhood: r.neighborhood || undefined,
+      topThreeIssues: r.top_three_issues || [],
+      priorityIssue: r.priority_issue,
+      concreteExample: r.concrete_example,
+      proposedSolution: r.proposed_solution,
+      youthOpportunities: r.youth_opportunities || [],
+      participateCommunityCircles: r.participate_community_circles || 'apenas_online',
+      optionalContactName: r.optional_contact_name || undefined,
+      optionalContactInfo: r.optional_contact_info || undefined,
+      lgpdConsent: r.lgpd_consent,
+      status: r.status || 'Recebida',
+      internalNotes: r.internal_notes || undefined,
+      createdAt: r.created_at
+    }));
+
+    return { data: mapped };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Falha ao buscar dados';
+    return { data: [], error: msg };
+  }
+}
+
+export async function updateSubmissionTriage(
+  id: string,
+  updates: { status?: string; internalNotes?: string }
+): Promise<{ success: boolean; error?: string }> {
+  if (!supabase) return { success: true };
+
+  try {
+    const payload: Record<string, any> = {};
+    if (updates.status) payload.status = updates.status;
+    if (updates.internalNotes !== undefined) payload.internal_notes = updates.internalNotes;
+
+    const { error } = await supabase
+      .from('consultation_responses')
+      .update(payload)
+      .eq('id', id);
+
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Falha na atualização';
+    return { success: false, error: msg };
+  }
 }
