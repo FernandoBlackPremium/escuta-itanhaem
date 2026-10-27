@@ -4,13 +4,15 @@ import type { ConsultationResponse } from '../types';
 import { INITIAL_DEMO_STATS } from '../data/mockData';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_KEY =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 let supabase: SupabaseClient | null = null;
 
-if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+if (SUPABASE_URL && SUPABASE_KEY) {
   try {
-    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
   } catch (err) {
     console.warn('Falha ao inicializar cliente Supabase, operando em modo local offline-first:', err);
   }
