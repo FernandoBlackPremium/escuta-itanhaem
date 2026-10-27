@@ -48,22 +48,37 @@ export async function submitConsultation(
   // 1. If Supabase is configured, enforce central remote persistence
   if (supabase) {
     try {
-      const { error } = await supabase.from('consultation_responses').insert([
-        {
-          protocol: submission.protocol,
-          neighborhood: submission.neighborhood || null,
-          top_three_issues: submission.topThreeIssues,
-          priority_issue: submission.priorityIssue,
-          concrete_example: submission.concreteExample,
-          proposed_solution: submission.proposedSolution,
-          youth_opportunities: submission.youthOpportunities,
-          participate_community_circles: submission.participateCommunityCircles,
-          optional_contact_name: submission.optionalContactName || null,
-          optional_contact_info: submission.optionalContactInfo || null,
-          lgpd_consent: submission.lgpdConsent,
-          created_at: submission.createdAt
-        }
-      ]);
+      const basePayload: Record<string, any> = {
+        protocol: submission.protocol,
+        neighborhood: submission.neighborhood || null,
+        top_three_issues: submission.topThreeIssues,
+        priority_issue: submission.priorityIssue,
+        concrete_example: submission.concreteExample,
+        proposed_solution: submission.proposedSolution,
+        youth_opportunities: submission.youthOpportunities,
+        participate_community_circles: submission.participateCommunityCircles,
+        optional_contact_name: submission.optionalContactName || null,
+        optional_contact_info: submission.optionalContactInfo || null,
+        lgpd_consent: submission.lgpdConsent,
+        created_at: submission.createdAt
+      };
+
+      const extendedPayload: Record<string, any> = {
+        ...basePayload,
+        ...(submission.frequency ? { frequency: submission.frequency } : {}),
+        ...(submission.impactLevel ? { impact_level: submission.impactLevel } : {}),
+        ...(submission.evidenceInfo ? { evidence_info: submission.evidenceInfo } : {}),
+        ...(submission.isAnonymous !== undefined ? { is_anonymous: submission.isAnonymous } : {})
+      };
+
+      // Try inserting with extended columns first
+      let { error } = await supabase.from('consultation_responses').insert([extendedPayload]);
+
+      // If remote table hasn't added extended columns yet, fallback to base columns
+      if (error && (error.message?.includes('column') || error.code === 'PGRST204')) {
+        const retry = await supabase.from('consultation_responses').insert([basePayload]);
+        error = retry.error;
+      }
 
       if (error) {
         console.error('Falha de persistência no banco Supabase:', error);

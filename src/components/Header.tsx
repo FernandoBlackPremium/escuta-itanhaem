@@ -22,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal }) => {
 
   // Track active section via IntersectionObserver
   useEffect(() => {
-    const sectionIds = ['top', 'consulta', 'temas', 'propostas', 'metodologia', 'responsavel'];
+    const sectionIds = ['top', 'consulta', 'temas', 'propostas', 'como-funciona', 'dashboard', 'metodologia', 'responsavel'];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
@@ -73,11 +73,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacyModal }) => {
   // Clean, focused navigation items matching real existing sections
   const NAV_ITEMS = [
     { label: 'Início', href: '#top', id: 'top' },
-    { label: 'Participar', href: '#consulta', id: 'consulta' },
-    { label: 'Problemas da Cidade', href: '#temas', id: 'temas' },
+    { label: 'Relatar Problema', href: '#consulta', id: 'consulta' },
+    { label: 'Catálogo de Temas', href: '#temas', id: 'temas' },
     { label: 'Propostas', href: '#propostas', id: 'propostas' },
-    { label: 'Transparência', href: '#metodologia', id: 'metodologia' },
-    { label: 'Sobre o Projeto', href: '#responsavel', id: 'responsavel' },
+    { label: 'Como Funciona', href: '#como-funciona', id: 'como-funciona' },
+    { label: 'Transparência & Fontes', href: '#dashboard', id: 'dashboard' },
+    { label: 'Sobre o Idealizador', href: '#responsavel', id: 'responsavel' },
   ];
 
   const handleNavClick = () => {

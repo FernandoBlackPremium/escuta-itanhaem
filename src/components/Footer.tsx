@@ -163,23 +163,23 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacyModal, onOpenAdminM
                   </a>
                 </li>
                 <li>
-                  <a href="#temas" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
-                    Temas em Avaliação
-                  </a>
-                </li>
-                <li>
                   <a href="#consulta" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
-                    Consulta Pública
+                    Relatar um Problema
                   </a>
                 </li>
                 <li>
-                  <a href="#juventude" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
-                    Juventude & IA
+                  <a href="#temas" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
+                    Catálogo de 12 Temas
                   </a>
                 </li>
                 <li>
                   <a href="#propostas" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
-                    Propostas em Estudo
+                    Banco de Propostas
+                  </a>
+                </li>
+                <li>
+                  <a href="#como-funciona" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
+                    Como Funciona (Limites Legais)
                   </a>
                 </li>
               </ul>
@@ -193,7 +193,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacyModal, onOpenAdminM
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.7rem', fontSize: '0.875rem' }}>
                 <li>
                   <a href="#dashboard" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
-                    Painel de Resultados
+                    Painel de Resultados & Critérios
+                  </a>
+                </li>
+                <li>
+                  <a href="#fontes" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
+                    Fontes & Documentos Oficiais
                   </a>
                 </li>
                 <li>

@@ -70,10 +70,14 @@ create policy "Permissao de triagem e atualizacao para administradores autentica
     using (true)
     with check (true);
 
--- 7. Migrações e Colunas de Gestão (Executar caso a tabela já exista)
+-- 7. Migrações e Colunas de Gestão e Escuta Qualificada (Executar caso a tabela já exista)
 alter table public.consultation_responses
     add column if not exists status text default 'Recebida',
-    add column if not exists internal_notes text;
+    add column if not exists internal_notes text,
+    add column if not exists frequency text,
+    add column if not exists impact_level text,
+    add column if not exists evidence_info text,
+    add column if not exists is_anonymous boolean default true;
 
 -- 7. Tabela de Propostas Municipais em Estudo
 create table if not exists public.proposals (

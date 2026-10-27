@@ -10,12 +10,19 @@ import {
   Compass,
   Leaf,
   Droplets,
-  ArrowUpRight
+  Trophy,
+  Heart,
+  Home,
+  FileText,
+  Eye,
+  Send
 } from 'lucide-react';
 import { CIVIC_AREAS } from '../data/mockData';
+import type { CivicArea } from '../types';
 
 interface ThemesSectionProps {
-  onSelectTheme: (themeId: string, themeTitle: string) => void;
+  onSelectTheme: (themeId: string, themeTitle?: string) => void;
+  onOpenThemeDetails?: (area: CivicArea) => void;
 }
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -28,22 +35,35 @@ const iconMap: Record<string, React.ReactNode> = {
   Shield: <Shield size={26} />,
   Compass: <Compass size={26} />,
   Leaf: <Leaf size={26} />,
-  Droplets: <Droplets size={26} />
+  Droplets: <Droplets size={26} />,
+  Trophy: <Trophy size={26} />,
+  Heart: <Heart size={26} />,
+  Home: <Home size={26} />,
+  FileText: <FileText size={26} />
 };
 
-type ThemeCategoryFilter = 'all' | 'essenciais' | 'infra' | 'economia';
+type ThemeCategoryFilter = 'all' | 'essenciais' | 'infra' | 'desenvolvimento';
 
-export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) => {
+export const ThemesSection: React.FC<ThemesSectionProps> = ({
+  onSelectTheme,
+  onOpenThemeDetails
+}) => {
   const [filter, setFilter] = useState<ThemeCategoryFilter>('all');
 
   const filteredAreas = useMemo(() => {
     switch (filter) {
       case 'essenciais':
-        return CIVIC_AREAS.filter((a) => ['saude', 'educacao', 'seguranca'].includes(a.id));
+        return CIVIC_AREAS.filter((a) =>
+          ['saude', 'educacao', 'seguranca', 'protecao_animal'].includes(a.id)
+        );
       case 'infra':
-        return CIVIC_AREAS.filter((a) => ['mobilidade', 'iluminacao', 'drenagem', 'meio_ambiente'].includes(a.id));
-      case 'economia':
-        return CIVIC_AREAS.filter((a) => ['juventude', 'emprego', 'turismo'].includes(a.id));
+        return CIVIC_AREAS.filter((a) =>
+          ['mobilidade', 'iluminacao', 'drenagem', 'habitacao'].includes(a.id)
+        );
+      case 'desenvolvimento':
+        return CIVIC_AREAS.filter((a) =>
+          ['desenvolvimento', 'turismo', 'esporte_lazer', 'transparencia'].includes(a.id)
+        );
       default:
         return CIVIC_AREAS;
     }
@@ -55,7 +75,7 @@ export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) =
       <div style={{ textAlign: 'center', maxWidth: '48rem', marginInline: 'auto', marginBottom: '3rem' }}>
         <div className="pill-badge" style={{ marginBottom: '1.25rem' }}>
           <span className="dot-yellow"></span>
-          A Cidade pela Perspectiva dos Moradores
+          Catálogo Municipal de Desafios
         </div>
 
         <h2
@@ -71,11 +91,11 @@ export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) =
         </h2>
 
         <p style={{ marginTop: '1.25rem', fontSize: '1.05rem', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
-          Selecione uma área para analisar os desafios identificados e opinar sobre as prioridades que mais afetam a
-          qualidade de vida no seu bairro.
+          Explore o diagnóstico de cada tema, consulte os relatos com status de verificação e aponte os problemas que
+          mais afetam o seu bairro.
         </p>
 
-        {/* SwiftUI Segmented Picker (iOS Control Style) */}
+        {/* Segmented Filter */}
         <div style={{ marginTop: '2.25rem', display: 'flex', justifyContent: 'center' }}>
           <div className="swiftui-segmented-control" role="tablist" aria-label="Filtrar áreas temáticas">
             <button
@@ -84,7 +104,7 @@ export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) =
               role="tab"
               aria-selected={filter === 'all'}
             >
-              Todos (10)
+              Todos os Temas ({CIVIC_AREAS.length})
             </button>
             <button
               className={`swiftui-segmented-btn ${filter === 'essenciais' ? 'active' : ''}`}
@@ -103,18 +123,18 @@ export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) =
               Infraestrutura & Ambiente
             </button>
             <button
-              className={`swiftui-segmented-btn ${filter === 'economia' ? 'active' : ''}`}
-              onClick={() => setFilter('economia')}
+              className={`swiftui-segmented-btn ${filter === 'desenvolvimento' ? 'active' : ''}`}
+              onClick={() => setFilter('desenvolvimento')}
               role="tab"
-              aria-selected={filter === 'economia'}
+              aria-selected={filter === 'desenvolvimento'}
             >
-              Juventude & Emprego
+              Economia, Cultura & Gestão
             </button>
           </div>
         </div>
       </div>
 
-      {/* 10 Thematic Cards Grid */}
+      {/* 12 Thematic Cards Grid */}
       <div
         style={{
           display: 'grid',
@@ -126,52 +146,100 @@ export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) =
           <div
             key={area.id}
             className="category-card"
-            style={{ cursor: 'pointer', minHeight: '240px' }}
-            onClick={() => onSelectTheme(area.id, area.title)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onSelectTheme(area.id, area.title);
-              }
+            style={{
+              minHeight: '260px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              position: 'relative'
             }}
           >
-            {/* Top Row: Icon & Dynamic Arrow */}
             <div>
-              <div className="card-icon" style={{ marginBottom: '1.5rem', color: 'var(--color-primary)' }}>
-                {iconMap[area.icon] || <Sparkles size={26} />}
+              {/* Top Row: Icon & Status Counter */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
+                <div className="card-icon" style={{ color: 'var(--color-primary)' }}>
+                  {iconMap[area.icon] || <Sparkles size={26} />}
+                </div>
+
+                <span
+                  style={{
+                    fontSize: '0.725rem',
+                    fontWeight: 700,
+                    padding: '0.2rem 0.55rem',
+                    borderRadius: 'var(--radius-full)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    color: '#FFFFFF'
+                  }}
+                >
+                  {area.catalogedIssuesCount || 3} relatos apurados
+                </span>
               </div>
-              <span className="arrow-icon">
-                <ArrowUpRight size={18} />
-              </span>
 
               {/* Title & Description */}
               <h3 className="font-display" style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.65rem' }}>
                 {area.title}
               </h3>
-              <p style={{ fontSize: '0.875rem', opacity: 0.85, lineHeight: 1.55 }}>
+              <p style={{ fontSize: '0.86rem', opacity: 0.85, lineHeight: 1.55 }}>
                 {area.description}
               </p>
             </div>
 
-            {/* Bottom tags */}
-            <div style={{ marginTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.45rem' }}>
-              {area.highlightIssues.slice(0, 2).map((tag, idx) => (
-                <span
-                  key={idx}
-                  style={{
-                    fontSize: '0.72rem',
-                    padding: '0.25rem 0.65rem',
-                    borderRadius: 'var(--radius-full)',
-                    border: '1px solid currentColor',
-                    opacity: 0.75,
-                    fontWeight: 500
+            {/* Bottom Actions Row */}
+            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.12)', display: 'flex', gap: '0.5rem', justifyContent: 'space-between' }}>
+              {onOpenThemeDetails && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenThemeDetails(area);
                   }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.18)',
+                    color: '#FFFFFF',
+                    padding: '0.45rem 0.75rem',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    transition: 'all 0.2s ease'
+                  }}
+                  title="Ver diagnóstico e relatos com status de verificação"
                 >
-                  {tag}
-                </span>
-              ))}
+                  <Eye size={13} color="var(--color-primary)" />
+                  <span>Ver Relatos</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectTheme(area.id, area.title);
+                }}
+                style={{
+                  background: 'var(--color-primary)',
+                  border: 'none',
+                  color: 'var(--color-black)',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  transition: 'all 0.2s ease'
+                }}
+                title="Relatar um problema sobre este tema"
+              >
+                <span>Relatar</span>
+                <Send size={12} />
+              </button>
             </div>
           </div>
         ))}
@@ -200,7 +268,7 @@ export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) =
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <span className="dot-yellow"></span>
           <span style={{ fontWeight: 500, color: 'var(--color-black)' }}>
-            Diagnóstico participativo: clique em qualquer área para registrá-la prioritariamente no formulário.
+            Não encontrou seu tema específico? Escolha <strong>"Outros Desafios"</strong> ou registre no formulário geral.
           </span>
         </div>
         <a
@@ -212,7 +280,7 @@ export const ThemesSection: React.FC<ThemesSectionProps> = ({ onSelectTheme }) =
             textUnderlineOffset: '4px'
           }}
         >
-          Ir para a Consulta Pública →
+          Relatar um Problema no Bairro →
         </a>
       </div>
     </section>

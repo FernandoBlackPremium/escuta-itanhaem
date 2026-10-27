@@ -107,31 +107,112 @@ export const ProposalDetailModal: React.FC<ProposalDetailModalProps> = ({ propos
             </p>
           </div>
 
+          {/* Grid de Benchmark e Instrumento Municipal */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+            {proposal.referenceCity && (
+              <div style={{ backgroundColor: 'var(--surface)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                  Cidade de Referência
+                </div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--foreground)', marginTop: '0.35rem' }}>
+                  {proposal.referenceCity}
+                </div>
+                {proposal.referenceStage && (
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      marginTop: '0.4rem',
+                      fontSize: '0.7rem',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: 'var(--radius-full)',
+                      backgroundColor: 'rgba(255, 198, 41, 0.15)',
+                      color: 'var(--color-primary-dark)',
+                      border: '1px solid rgba(255, 198, 41, 0.4)'
+                    }}
+                  >
+                    Estágio: {proposal.referenceStage}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {proposal.municipalInstrument && (
+              <div style={{ backgroundColor: 'var(--surface)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                  Instrumento Municipal Possível
+                </div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', marginTop: '0.35rem' }}>
+                  {proposal.municipalInstrument}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Programa ou Lei Já Existente */}
+          {proposal.existingLawOrProgram && (
+            <div style={{ backgroundColor: 'var(--surface)', padding: '1.25rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)' }}>
+              <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--muted-foreground)', marginBottom: '0.4rem', fontWeight: 700 }}>
+                4. Legislação ou Serviço Já Existente
+              </h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--foreground)', lineHeight: 1.6 }}>
+                {proposal.existingLawOrProgram}
+              </p>
+            </div>
+          )}
+
+          {/* Riscos, Desafios & Indicador */}
+          {(proposal.risksAndCosts || proposal.trackingIndicator) && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+              {proposal.risksAndCosts && (
+                <div style={{ backgroundColor: 'var(--surface)', padding: '1.15rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '0.3rem' }}>
+                    Riscos, Desafios & Custos Conhecidos
+                  </div>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--foreground)', lineHeight: 1.5 }}>
+                    {proposal.risksAndCosts}
+                  </p>
+                </div>
+              )}
+              {proposal.trackingIndicator && (
+                <div style={{ backgroundColor: 'var(--surface)', padding: '1.15rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '0.3rem' }}>
+                    Indicador de Acompanhamento
+                  </div>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--foreground)', lineHeight: 1.5 }}>
+                    {proposal.trackingIndicator}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Grid de Metadados: Público, Competência, Custo */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-            <div style={{ border: '1px solid var(--color-border)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>
+            <div style={{ border: '1px solid var(--border)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', fontWeight: 600 }}>
                 Público Beneficiado
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-black)', marginTop: '0.3rem' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', marginTop: '0.3rem' }}>
                 {proposal.targetBeneficiaries}
               </div>
             </div>
 
-            <div style={{ border: '1px solid var(--color-border)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>
-                Competência Administrativa
+            <div style={{ border: '1px solid var(--border)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', fontWeight: 600 }}>
+                Competência Responsável
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-black)', marginTop: '0.3rem' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--foreground)', marginTop: '0.3rem' }}>
                 {proposal.administrativeCompetence}
               </div>
             </div>
 
-            <div style={{ border: '1px solid var(--color-border)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>
+            <div style={{ border: '1px solid var(--border)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', textTransform: 'uppercase', fontWeight: 600 }}>
                 Estimativa de Custo
               </div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--color-black)', marginTop: '0.3rem' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--foreground)', marginTop: '0.3rem' }}>
                 {proposal.estimatedCost}
               </div>
             </div>
@@ -139,7 +220,7 @@ export const ProposalDetailModal: React.FC<ProposalDetailModalProps> = ({ propos
 
           {/* Fontes Consultadas */}
           <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--color-black)' }}>
+            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--foreground)' }}>
               Fontes & Referências Oficiais Consultadas
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -152,18 +233,18 @@ export const ProposalDetailModal: React.FC<ProposalDetailModalProps> = ({ propos
                     justifyContent: 'space-between',
                     padding: '0.75rem 1rem',
                     borderRadius: 'var(--radius-md)',
-                    backgroundColor: 'var(--color-surface)',
-                    border: '1px solid var(--color-border)',
+                    backgroundColor: 'var(--surface)',
+                    border: '1px solid var(--border)',
                     fontSize: '0.875rem'
                   }}
                 >
-                  <span style={{ color: 'var(--color-black)' }}>{source.title}</span>
+                  <span style={{ color: 'var(--foreground)' }}>{source.title}</span>
                   {source.url && (
                     <a
                       href={source.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ color: 'var(--color-black)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'underline' }}
+                      style={{ color: 'var(--color-primary-dark)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'underline' }}
                     >
                       <span>Acessar</span>
                       <ExternalLink size={14} />
@@ -177,21 +258,23 @@ export const ProposalDetailModal: React.FC<ProposalDetailModalProps> = ({ propos
           {/* Legal Notice */}
           <div
             style={{
-              padding: '0.9rem',
+              padding: '1rem',
               borderRadius: 'var(--radius-md)',
-              backgroundColor: 'rgba(0, 0, 0, 0.03)',
-              border: '1px solid var(--color-border)',
-              fontSize: '0.8rem',
-              color: 'var(--color-text-secondary)',
+              backgroundColor: 'rgba(255, 198, 41, 0.08)',
+              border: '1px solid rgba(255, 198, 41, 0.3)',
+              fontSize: '0.825rem',
+              color: 'var(--muted-foreground)',
               display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
+              alignItems: 'flex-start',
+              gap: '0.65rem',
+              lineHeight: 1.5
             }}
           >
-            <AlertCircle size={16} />
+            <AlertCircle size={18} style={{ color: 'var(--color-primary-dark)', flexShrink: 0, marginTop: '2px' }} />
             <span>
-              Proposta em estágio de estudo técnico independente. Não representa compromisso orçamentário oficial da
-              Prefeitura nem anúncio eleitoral partidário.
+              <strong>Aviso de Transparência Cívica:</strong> Esta proposta é um estudo técnico independente e não constitui
+              projeto de lei formalmente aprovado pela Câmara Municipal nem programa em execução pela Prefeitura de Itanhaém.
+              Qualquer implementação depende do rito legislativo, estudos de impacto orçamentário e decisão dos poderes constituídos.
             </span>
           </div>
         </div>

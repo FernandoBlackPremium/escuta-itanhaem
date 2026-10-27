@@ -5,6 +5,28 @@ export type AdministrativeStatus =
   | 'Em avaliação orçamentária' 
   | 'Pronta para discussão pública';
 
+export type IssueStatus =
+  | 'relato recebido'
+  | 'em verificação'
+  | 'evidência encontrada'
+  | 'encaminhado para análise'
+  | 'proposta em estudo'
+  | 'resolvido/verificado';
+
+export interface CivicIssueItem {
+  id: string;
+  areaId: string;
+  title: string;
+  description: string;
+  neighborhoods: string[];
+  frequency?: string;
+  impactLevel?: string;
+  evidenceFound?: string;
+  status: IssueStatus;
+  statusExplanation: string;
+  dateRecorded: string;
+}
+
 export interface CivicArea {
   id: string;
   title: string;
@@ -12,6 +34,8 @@ export interface CivicArea {
   description: string;
   popularMentionsCount?: number;
   highlightIssues: string[];
+  catalogedIssuesCount?: number;
+  municipalCompetenceScope?: string;
 }
 
 export interface Proposal {
@@ -32,6 +56,13 @@ export interface Proposal {
   }[];
   status: AdministrativeStatus;
   dateUpdated: string;
+  // Campos detalhados da metodologia
+  existingLawOrProgram?: string;
+  referenceCity?: string;
+  referenceStage?: 'Ideia' | 'Projeto piloto' | 'Lei aprovada' | 'Implementada' | 'Resultado medido';
+  municipalInstrument?: 'Projeto de Lei Ordinária' | 'Emenda à Lei Orgânica' | 'Indicação ao Executivo' | 'Requerimento de Informação' | 'Emenda Impositiva';
+  risksAndCosts?: string;
+  trackingIndicator?: string;
 }
 
 export interface YouthOpportunityItem {
@@ -70,6 +101,11 @@ export interface ConsultationResponse {
   status?: TriageStatus;
   internalNotes?: string;
   createdAt: string;
+  // Novos campos estruturados para qualificação da escuta
+  frequency?: 'Diário / Contínuo' | 'Semanal' | 'Períodos de chuva' | 'Temporada de verão' | 'Esporádico';
+  impactLevel?: 'Risco à segurança ou saúde' | 'Prejuízo à mobilidade / transporte' | 'Impacto financeiro / comércio' | 'Dificuldade de acesso a serviços públicos';
+  evidenceInfo?: string;
+  isAnonymous?: boolean;
 }
 
 export interface PublicSource {
@@ -78,4 +114,6 @@ export interface PublicSource {
   description: string;
   url: string;
   theme: string;
+  type?: 'Legislação' | 'Fiscalização' | 'Dados Oficiais' | 'Plano Municipal';
 }
+

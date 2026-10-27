@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Users, MapPin, AlertCircle, RefreshCw, MessageSquareQuote } from 'lucide-react';
+import { BarChart3, Users, MapPin, AlertCircle, RefreshCw, MessageSquareQuote, ShieldCheck, Scale, ExternalLink, BookOpen } from 'lucide-react';
 import { getAggregatedStats, fetchLivePublicStats } from '../services/storage';
+import { PRIORITIZATION_CRITERIA, PUBLIC_SOURCES } from '../data/mockData';
 
 export const DashboardSection: React.FC = () => {
   const [stats, setStats] = useState(() => getAggregatedStats());
+  const [selectedSourceType, setSelectedSourceType] = useState<string>('Todos');
   const [liveData, setLiveData] = useState<{ isLive: boolean; totalResponses: number; recentVoices: any[] }>({
     isLive: false,
     totalResponses: stats.totalResponses,
@@ -29,6 +31,11 @@ export const DashboardSection: React.FC = () => {
   const refreshData = () => {
     loadData();
   };
+
+  const sourceTypes = ['Todos', 'Legislação', 'Fiscalização', 'Plano Municipal', 'Dados Oficiais'];
+  const filteredSources = selectedSourceType === 'Todos'
+    ? PUBLIC_SOURCES
+    : PUBLIC_SOURCES.filter((s) => s.type === selectedSourceType);
 
   return (
     <section id="dashboard" className="container-px max-w-7xl" style={{ paddingBlock: '5.5rem' }}>
@@ -375,6 +382,209 @@ export const DashboardSection: React.FC = () => {
         </div>
       </div>
 
+      {/* Painel de Priorização Cívica com Critérios Públicos */}
+      <div className="swiftui-card" style={{ marginBottom: '3rem', padding: '2.25rem', backgroundColor: '#FFFFFF' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+          <div
+            style={{
+              width: '2.5rem',
+              height: '2.5rem',
+              borderRadius: 'var(--radius-md)',
+              backgroundColor: 'rgba(255, 198, 41, 0.15)',
+              color: 'var(--color-primary-dark)',
+              display: 'grid',
+              placeItems: 'center'
+            }}
+          >
+            <Scale size={20} />
+          </div>
+          <div>
+            <h3 className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--foreground)' }}>
+              Critérios Públicos de Priorização
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>
+              Como os relatos dos cidadãos são avaliados para formulação técnica de propostas
+            </p>
+          </div>
+        </div>
+
+        {/* Anti-distortion warning banner */}
+        <div
+          style={{
+            backgroundColor: 'rgba(255, 198, 41, 0.08)',
+            border: '1px solid rgba(255, 198, 41, 0.35)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '1rem 1.25rem',
+            marginBottom: '1.75rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '0.75rem'
+          }}
+        >
+          <ShieldCheck size={20} style={{ color: 'var(--color-primary-dark)', flexShrink: 0, marginTop: '2px' }} />
+          <div style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', lineHeight: 1.55 }}>
+            <strong style={{ color: 'var(--foreground)' }}>Princípio contra distorção de volume bruto:</strong> O número
+            bruto de relatos <em>não é transformado automaticamente em prova de prevalência</em>. Comunidades com maior acesso digital
+            ou grupos organizados poderiam inflar demandas específicas. Para garantir justiça distributiva entre os 26 bairros,
+            o Escuta Itanhaém pondera volume com gravidade, dispersão geográfica, evidências objetivas e viabilidade orçamentária.
+          </div>
+        </div>
+
+        {/* 5 Public Criteria Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '1rem'
+          }}
+        >
+          {PRIORITIZATION_CRITERIA.map((crit) => (
+            <div
+              key={crit.id}
+              style={{
+                backgroundColor: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '1.25rem',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--color-primary-dark)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Peso: {crit.weight}
+                  </span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>Critério</span>
+                </div>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '0.4rem' }}>
+                  {crit.name}
+                </h4>
+                <p style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
+                  {crit.description}
+                </p>
+              </div>
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: '0.6rem', fontSize: '0.75rem', color: 'var(--muted-foreground)', fontStyle: 'italic' }}>
+                💡 {crit.caveat}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Repositório de Fontes & Documentos Oficiais */}
+      <div id="fontes" className="swiftui-card" style={{ marginBottom: '3rem', padding: '2.25rem', backgroundColor: '#FFFFFF' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div
+              style={{
+                width: '2.5rem',
+                height: '2.5rem',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                color: 'var(--foreground)',
+                display: 'grid',
+                placeItems: 'center'
+              }}
+            >
+              <BookOpen size={20} />
+            </div>
+            <div>
+              <h3 className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--foreground)' }}>
+                Repositório de Fontes & Documentos Oficiais
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>
+                Bases de dados, planos municipais e sistemas de controle externo utilizados na apuração
+              </p>
+            </div>
+          </div>
+
+          {/* Filter Pills for Source Types */}
+          <div className="swiftui-segmented-control" style={{ flexWrap: 'wrap' }}>
+            {sourceTypes.map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setSelectedSourceType(type)}
+                className={`swiftui-segmented-btn ${selectedSourceType === type ? 'active' : ''}`}
+                style={{ fontSize: '0.75rem' }}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sources Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1rem'
+          }}
+        >
+          {filteredSources.map((source, idx) => (
+            <div
+              key={idx}
+              style={{
+                backgroundColor: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '1.25rem',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                transition: 'var(--transition)'
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span
+                    style={{
+                      fontSize: '0.7rem',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: 'var(--radius-sm)',
+                      backgroundColor: 'rgba(255, 198, 41, 0.15)',
+                      color: 'var(--color-primary-dark)'
+                    }}
+                  >
+                    {source.type}
+                  </span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--muted-foreground)' }}>
+                    {source.organ}
+                  </span>
+                </div>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '0.4rem' }}>
+                  {source.name}
+                </h4>
+                <p style={{ fontSize: '0.825rem', color: 'var(--muted-foreground)', lineHeight: 1.5, marginBottom: '1rem' }}>
+                  {source.description}
+                </p>
+              </div>
+
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', fontWeight: 600 }}>
+                  {source.theme}
+                </span>
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary"
+                  style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', gap: '0.35rem', textDecoration: 'none' }}
+                >
+                  <span>Acessar</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Methodology Disclaimer */}
       <div
         style={{
@@ -383,7 +593,7 @@ export const DashboardSection: React.FC = () => {
           WebkitBackdropFilter: 'blur(16px)',
           borderRadius: 'var(--radius-xl)',
           padding: '1.5rem',
-          border: '1px solid var(--color-border)',
+          border: '1px solid var(--border)',
           boxShadow: 'var(--shadow-sm)',
           display: 'flex',
           alignItems: 'flex-start',
@@ -391,12 +601,13 @@ export const DashboardSection: React.FC = () => {
         }}
       >
         <AlertCircle size={22} color="var(--color-primary)" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-        <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.55 }}>
-          <strong style={{ color: 'var(--color-black)' }}>Nota Metodológica sobre os Dados:</strong> Os indicadores
+        <div style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', lineHeight: 1.55 }}>
+          <strong style={{ color: 'var(--foreground)' }}>Nota Metodológica e Limitações da Pesquisa:</strong> Os indicadores
           apresentados neste painel decorrem de respostas voluntárias de moradores de Itanhaém. Trata-se de
-          um instrumento de diagnóstico cívico e escuta social ativa, não configurando amostragem censitária.
+          um instrumento cívico independente de escuta social ativa e diagnóstico participativo, não configurando amostragem probabilística censitária.
           As prioridades aqui indicadas servem de subsídio para cruzamento com bases públicas oficiais (DataSUS,
-          SIOPE, IBGE e Transparência Municipal).
+          SIOPE, IBGE, TCE-SP e Transparência Municipal). Esta iniciativa não é canal oficial da Prefeitura de Itanhaém,
+          não substitui a Ouvidoria Municipal e não garante atendimento automático por órgãos públicos.
         </div>
       </div>
 

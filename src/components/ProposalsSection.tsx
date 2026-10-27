@@ -168,6 +168,41 @@ export const ProposalsSection: React.FC = () => {
                     {prop.proposedSolution}
                   </p>
                 </div>
+                {/* Benchmark and Instrument Tags */}
+                {(prop.referenceCity || prop.municipalInstrument) && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1rem' }}>
+                    {prop.referenceCity && (
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 600,
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: 'var(--radius-sm)',
+                          backgroundColor: 'var(--surface-sunken)',
+                          color: 'var(--foreground)',
+                          border: '1px solid var(--border)'
+                        }}
+                      >
+                        🏛️ Ref: {prop.referenceCity}
+                      </span>
+                    )}
+                    {prop.municipalInstrument && (
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 600,
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: 'var(--radius-sm)',
+                          backgroundColor: 'rgba(255, 198, 41, 0.12)',
+                          color: 'var(--color-primary-dark)',
+                          border: '1px solid rgba(255, 198, 41, 0.3)'
+                        }}
+                      >
+                        📜 {prop.municipalInstrument}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Card Footer: Metadata & Details Button */}
@@ -175,12 +210,12 @@ export const ProposalsSection: React.FC = () => {
                 <div
                   style={{
                     paddingTop: '1rem',
-                    borderTop: '1px solid var(--color-border)',
+                    borderTop: '1px solid var(--border)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     fontSize: '0.8rem',
-                    color: 'var(--color-text-secondary)',
+                    color: 'var(--muted-foreground)',
                     marginBottom: '1rem'
                   }}
                 >

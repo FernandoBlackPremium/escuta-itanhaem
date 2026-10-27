@@ -5,7 +5,8 @@ import {
   AlertCircle,
   Copy,
   Check,
-  Lock
+  Lock,
+  ShieldCheck
 } from 'lucide-react';
 import { ITANHAEM_NEIGHBORHOODS, CIVIC_AREAS } from '../data/mockData';
 import { submitConsultation } from '../services/storage';
@@ -26,9 +27,13 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
   const [topThreeIssues, setTopThreeIssues] = useState<string[]>([]);
   const [priorityIssue, setPriorityIssue] = useState<string>('');
   const [concreteExample, setConcreteExample] = useState<string>('');
+  const [frequency, setFrequency] = useState<string>('Diário / Contínuo');
+  const [impactLevel, setImpactLevel] = useState<string>('Risco à segurança ou saúde');
+  const [evidenceInfo, setEvidenceInfo] = useState<string>('');
   const [proposedSolution, setProposedSolution] = useState<string>('');
-  const [youthOpportunities, setYouthOpportunities] = useState<string[]>([]);
-  const [participateCircles, setParticipateCircles] = useState<'sim' | 'nao' | 'apenas_online'>('apenas_online');
+  const [isAnonymous, setIsAnonymous] = useState<boolean>(true);
+  const [youthOpportunities] = useState<string[]>([]);
+  const [participateCircles] = useState<'sim' | 'nao' | 'apenas_online'>('apenas_online');
   const [optionalName, setOptionalName] = useState<string>('');
   const [optionalContact, setOptionalContact] = useState<string>('');
   const [lgpdConsent, setLgpdConsent] = useState<boolean>(true);
@@ -76,36 +81,17 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
     }
   };
 
-  const youthOptions = [
-    'Cursos de Inteligência Artificial e Ferramentas Digitais',
-    'Programação de Sistemas e Desenvolvimento Web',
-    'Educação Financeira e Gestão de Pequenos Negócios',
-    'Vendas pela Internet e E-commerce Local',
-    'Preparação Prática para o Primeiro Emprego',
-    'Projetos Estudantis e Hackathons para Desafios da Cidade',
-    'Atividades Preventivas com Bombeiros, Saúde e Segurança',
-    'Esporte, Lazer Comunitário e Cultura Jovem'
-  ];
-
-  const toggleYouthOption = (option: string) => {
-    if (youthOpportunities.includes(option)) {
-      setYouthOpportunities(youthOpportunities.filter((item) => item !== option));
-    } else {
-      setYouthOpportunities([...youthOpportunities, option]);
-    }
-  };
-
   const validateForm = (): { isValid: boolean; errors: Record<string, string> } => {
     const errs: Record<string, string> = {};
 
     if (topThreeIssues.length === 0) {
-      errs.topThreeIssues = 'Selecione pelo menos um tema prioritário (até 3).';
+      errs.topThreeIssues = 'Selecione pelo menos uma área prioritária (até 3).';
     }
     if (!priorityIssue) {
       errs.priorityIssue = 'Indique qual é o problema prioritário número 1.';
     }
     if (!concreteExample || concreteExample.trim().length < 10) {
-      errs.concreteExample = 'Por favor, descreva um exemplo concreto com pelo menos 10 caracteres.';
+      errs.concreteExample = 'Por favor, descreva o problema com pelo menos 10 caracteres.';
     }
     if (!proposedSolution || proposedSolution.trim().length < 5) {
       errs.proposedSolution = 'Por favor, registre sua sugestão de solução com pelo menos 5 caracteres.';
@@ -148,7 +134,11 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
         participateCommunityCircles: participateCircles,
         optionalContactName: optionalName.trim() || undefined,
         optionalContactInfo: optionalContact.trim() || undefined,
-        lgpdConsent
+        lgpdConsent,
+        frequency: frequency as any,
+        impactLevel: impactLevel as any,
+        evidenceInfo: evidenceInfo.trim() || undefined,
+        isAnonymous
       });
 
       if (res.success) {
@@ -178,7 +168,10 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
     setPriorityIssue('');
     setConcreteExample('');
     setProposedSolution('');
-    setYouthOpportunities([]);
+    setEvidenceInfo('');
+    setFrequency('Diário / Contínuo');
+    setImpactLevel('Risco à segurança ou saúde');
+    setIsAnonymous(true);
     setOptionalName('');
     setOptionalContact('');
     setProtocolResult(null);
@@ -187,12 +180,12 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
 
   return (
     <section id="consulta" className="container-px max-w-7xl" style={{ paddingBlock: '5.5rem' }}>
-      <div style={{ maxWidth: '52rem', marginInline: 'auto' }}>
+      <div style={{ maxWidth: '54rem', marginInline: 'auto' }}>
         {/* Section Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <div className="pill-badge" style={{ marginBottom: '1.25rem' }}>
             <span className="dot-yellow"></span>
-            Participação Cidadã Anônima & Voluntária
+            Diagnóstico Cívico Municipal · Escuta Ativa
           </div>
 
           <h2
@@ -204,13 +197,36 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
               color: 'var(--color-black)'
             }}
           >
-            Consulta pública aos <em style={{ fontStyle: 'italic', color: 'var(--color-primary)' }}>moradores</em>.
+            Relate um problema nos <em style={{ fontStyle: 'italic', color: 'var(--color-primary)' }}>bairros de Itanhaém</em>.
           </h2>
 
           <p style={{ marginTop: '1.25rem', fontSize: '1.05rem', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
-            Compartilhe as reais necessidades do seu bairro. Não é exigido CPF, endereço exato ou filiação partidária.
-            Suas respostas alimentam diretamente o painel de propostas municipais em estudo.
+            Compartilhe a realidade concreta das ruas da nossa cidade. Seus relatos alimentam diretamente o banco público
+            de questões para formulação de propostas técnicas, sustentáveis e com base na competência municipal.
           </p>
+
+          {/* Aviso de limites e emergências */}
+          <div
+            style={{
+              marginTop: '1.5rem',
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--color-border)',
+              padding: '0.85rem 1.25rem',
+              fontSize: '0.825rem',
+              color: 'var(--color-text-secondary)',
+              lineHeight: 1.5,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              textAlign: 'left'
+            }}
+          >
+            <ShieldCheck size={18} color="var(--emerald)" style={{ flexShrink: 0 }} />
+            <span>
+              <strong>Iniciativa Cívica Independente:</strong> Não é canal oficial da Prefeitura nem presta atendimento de emergência (SAMU 192, Bombeiros 193). Não coletamos CPF ou dados sigilosos.
+            </span>
+          </div>
         </div>
 
         {/* Confirmation Screen */}
@@ -242,12 +258,12 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
             </div>
 
             <h3 className="font-display" style={{ fontSize: '2.1rem', fontWeight: 800, marginBottom: '0.75rem', color: 'var(--color-black)' }}>
-              Contribuição registrada com sucesso!
+              Relato registrado com sucesso!
             </h3>
 
             <p style={{ color: 'var(--color-text-secondary)', maxWidth: '34rem', marginInline: 'auto', fontSize: '0.975rem', lineHeight: 1.6 }}>
-              Sua resposta foi arquivada de forma segura e já está contabilizada no painel de participação pública de
-              Itanhaém. Guarde o número de protocolo para acompanhar o desdobramento das propostas:
+              Sua contribuição foi salva com segurança no banco cívico de dados e já entrou na triagem de prioridades do
+              Escuta Itanhaém. Guarde o número de protocolo para acompanhar o desdobramento das propostas:
             </p>
 
             {/* Protocol Box */}
@@ -291,16 +307,16 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href="#dashboard" className="btn-primary">
-                <span>Ver Painel de Resultados</span>
+              <a href="#propostas" className="btn-primary">
+                <span>Ver Banco de Propostas</span>
               </a>
               <button type="button" onClick={handleReset} className="btn-secondary">
-                <span>Enviar outra contribuição</span>
+                <span>Registrar outro relato</span>
               </button>
             </div>
           </div>
         ) : (
-          /* Interactive Form (SwiftUI Inset Grouped) */
+          /* Interactive Form */
           <form
             onSubmit={handleSubmit}
             className="swiftui-card"
@@ -324,7 +340,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
             {/* Question 1: Neighborhood */}
             <div style={{ marginBottom: '2.5rem' }}>
               <label htmlFor="form-neighborhood" className="form-label" style={{ fontSize: '1.05rem' }}>
-                1. Em qual bairro ou região de Itanhaém você mora?{' '}
+                1. Em qual bairro ou região de Itanhaém fica o problema?{' '}
                 <span style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', fontWeight: 400 }}>
                   (Opcional — não solicitamos endereço exato)
                 </span>
@@ -335,7 +351,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                 value={neighborhood}
                 onChange={(e) => setNeighborhood(e.target.value)}
               >
-                <option value="">Selecione seu bairro ou região...</option>
+                <option value="">Selecione o bairro ou região...</option>
                 {ITANHAEM_NEIGHBORHOODS.map((b) => (
                   <option key={b} value={b}>
                     {b}
@@ -343,21 +359,21 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                 ))}
               </select>
               <p className="form-hint">
-                A identificação do bairro ajuda a mapear demandas geográficas específicas, sem violar sua privacidade.
+                A identificação do bairro permite analisar a dispersão geográfica das demandas sem violar a privacidade domiciliar.
               </p>
             </div>
 
-            {/* Question 2: Top 3 Issues */}
+            {/* Question 2: Areas / Issues */}
             <div id="form-topThreeIssues" style={{ marginBottom: '2.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.65rem' }}>
                 <label className="form-label" style={{ fontSize: '1.05rem' }}>
-                  2. Quais são os três problemas que mais precisam de atenção na sua região? *
+                  2. A quais temas municipais esse problema se relaciona? *
                 </label>
                 <span
                   style={{
                     fontSize: '0.8rem',
                     fontWeight: 600,
-                    color: topThreeIssues.length === 3 ? 'var(--emerald)' : 'var(--muted-foreground)'
+                    color: topThreeIssues.length > 0 ? 'var(--emerald)' : 'var(--muted-foreground)'
                   }}
                 >
                   {topThreeIssues.length}/3 selecionados
@@ -374,7 +390,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
                   gap: '0.65rem'
                 }}
               >
@@ -413,7 +429,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
             {topThreeIssues.length > 0 && (
               <div id="form-priorityIssue" style={{ marginBottom: '2.5rem' }} className="animate-fade-up">
                 <label htmlFor="form-priority-select" className="form-label" style={{ fontSize: '1.05rem' }}>
-                  3. Qual desses problemas deveria ser a prioridade número um? *
+                  3. Qual dessas áreas é o foco principal deste relato? *
                 </label>
                 {errors.priorityIssue && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#DC2626', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
@@ -427,7 +443,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                   value={priorityIssue}
                   onChange={(e) => setPriorityIssue(e.target.value)}
                 >
-                  <option value="">Selecione a prioridade máxima...</option>
+                  <option value="">Selecione o tema principal...</option>
                   {topThreeIssues.map((issue) => (
                     <option key={issue} value={issue}>
                       {issue}
@@ -437,11 +453,11 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
               </div>
             )}
 
-            {/* Question 4: Concrete Example */}
+            {/* Question 4: Problem description */}
             <div id="form-concreteExample" style={{ marginBottom: '2.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.4rem' }}>
                 <label htmlFor="form-example-input" className="form-label" style={{ fontSize: '1.05rem' }}>
-                  4. Você pode descrever um exemplo concreto do problema no seu bairro? *
+                  4. Descreva a situação com clareza e detalhes objetivos: *
                 </label>
                 <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
                   {concreteExample.length} caracteres (mín. 10)
@@ -456,21 +472,87 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
               <textarea
                 id="form-example-input"
                 className="form-textarea"
-                rows={3}
-                placeholder="Exemplo: Na Avenida principal do bairro, os buracos acumulam água há mais de 3 meses e a iluminação apaga frequentemente à noite..."
+                rows={4}
+                placeholder="Exemplo: Na principal rua de ligação do bairro, a vala de drenagem está com mato alto e areia acumulada, causando alagamento constante na calçada e nas entradas das casas quando chove forte..."
                 value={concreteExample}
                 onChange={(e) => setConcreteExample(e.target.value)}
               />
               <p className="form-hint">
-                Evite citar nomes de vizinhos ou ofensas pessoais. Foco no fato urbano e na melhoria necessária.
+                <strong>Orientações de integridade:</strong> Foco no fato público e no serviço municipal. Não cite nomes de vizinhos, ofensas pessoais ou acusações não comprovadas.
               </p>
             </div>
 
-            {/* Question 5: Proposed Solution */}
+            {/* NEW Question 5: Frequência & Impacto */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                gap: '1.5rem',
+                marginBottom: '2.5rem'
+              }}
+            >
+              <div>
+                <label htmlFor="form-frequency" className="form-label" style={{ fontSize: '0.95rem' }}>
+                  5. Com que frequência o problema ocorre?
+                </label>
+                <select
+                  id="form-frequency"
+                  className="form-select"
+                  value={frequency}
+                  onChange={(e) => setFrequency(e.target.value)}
+                >
+                  <option value="Diário / Contínuo">Diário / Contínuo (ocorre todos os dias)</option>
+                  <option value="Semanal">Semanal (várias vezes por semana)</option>
+                  <option value="Períodos de chuva">Períodos de chuva / maré alta</option>
+                  <option value="Temporada de verão">Temporada de verão / picos sazonais</option>
+                  <option value="Esporádico">Esporádico (ocasionalmente)</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="form-impact" className="form-label" style={{ fontSize: '0.95rem' }}>
+                  6. Qual é o maior impacto na vida das pessoas?
+                </label>
+                <select
+                  id="form-impact"
+                  className="form-select"
+                  value={impactLevel}
+                  onChange={(e) => setImpactLevel(e.target.value)}
+                >
+                  <option value="Risco à segurança ou saúde">Risco à segurança ou saúde pública</option>
+                  <option value="Prejuízo à mobilidade / transporte">Prejuízo à mobilidade, calçadas ou transporte</option>
+                  <option value="Impacto financeiro / comércio">Prejuízo ao comércio local e emprego</option>
+                  <option value="Dificuldade de acesso a serviços públicos">Dificuldade de acesso a postos/escolas</option>
+                </select>
+              </div>
+            </div>
+
+            {/* NEW Question 7: Evidências preexistentes */}
+            <div style={{ marginBottom: '2.5rem' }}>
+              <label htmlFor="form-evidence" className="form-label" style={{ fontSize: '1.05rem' }}>
+                7. Existe alguma evidência, link ou protocolo anterior já aberto?{' '}
+                <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 400 }}>
+                  (Opcional)
+                </span>
+              </label>
+              <input
+                id="form-evidence"
+                type="text"
+                className="form-input"
+                placeholder="Ex: Protocolo Ouvidoria Municipal nº 12345/2026, matéria de jornal, link de foto ou relato de reunião de moradores..."
+                value={evidenceInfo}
+                onChange={(e) => setEvidenceInfo(e.target.value)}
+              />
+              <p className="form-hint">
+                Evidências documentais ajudam a elevar o status da questão de "relato recebido" para "evidência encontrada".
+              </p>
+            </div>
+
+            {/* Question 8: Proposed Solution */}
             <div id="form-proposedSolution" style={{ marginBottom: '2.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.4rem' }}>
                 <label htmlFor="form-solution-input" className="form-label" style={{ fontSize: '1.05rem' }}>
-                  5. Qual solução viável você sugere? *
+                  8. Qual solução realista você sugere para resolver essa situação? *
                 </label>
                 <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
                   {proposedSolution.length} caracteres (mín. 5)
@@ -486,95 +568,26 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                 id="form-solution-input"
                 className="form-textarea"
                 rows={3}
-                placeholder="Exemplo: Instalação de lâmpadas LED duráveis, cronograma público de patrolamento das vias e fiscalização comunitária..."
+                placeholder="Exemplo: Estabelecer um cronograma bimestral de desassoreamento preventivo e instalar tampas de concreto nas saídas da tubulação..."
                 value={proposedSolution}
                 onChange={(e) => setProposedSolution(e.target.value)}
               />
             </div>
 
-            {/* Question 6: Youth & Opportunities */}
-            <div style={{ marginBottom: '2.5rem' }}>
-              <label className="form-label" style={{ fontSize: '1.05rem', marginBottom: '0.75rem' }}>
-                6. Quais oportunidades deveriam ser ampliadas para os jovens de Itanhaém?{' '}
-                <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 400 }}>
-                  (Opcional — selecione as que considerar relevantes)
-                </span>
+            {/* NEW: Opção de Anonimato Explícito */}
+            <div style={{ marginBottom: '2.5rem', backgroundColor: 'var(--color-surface)', padding: '1.25rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--color-black)', fontWeight: 600 }}>
+                <input
+                  type="checkbox"
+                  checked={isAnonymous}
+                  onChange={(e) => setIsAnonymous(e.target.checked)}
+                  style={{ accentColor: 'var(--color-black)', width: '1.2rem', height: '1.2rem' }}
+                />
+                <span>Desejo que meu relato seja publicado estritamente de forma anônima no banco de dados.</span>
               </label>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
-                {youthOptions.map((opt) => {
-                  const checked = youthOpportunities.includes(opt);
-                  return (
-                    <label
-                      key={opt}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.85rem',
-                        padding: '0.75rem 1rem',
-                        borderRadius: 'var(--radius-lg)',
-                        backgroundColor: checked ? 'var(--color-primary-surface)' : '#FFFFFF',
-                        cursor: 'pointer',
-                        fontSize: '0.9rem',
-                        color: 'var(--color-black)',
-                        border: checked ? '1.5px solid var(--color-primary)' : '1px solid var(--color-border)',
-                        transition: 'var(--transition)'
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => toggleYouthOption(opt)}
-                        style={{ accentColor: 'var(--color-black)', width: '1.15rem', height: '1.15rem' }}
-                      />
-                      <span>{opt}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Question 7: Community Circles (SwiftUI Segmented Toggle) */}
-            <div style={{ marginBottom: '2.5rem' }}>
-              <label className="form-label" style={{ fontSize: '1.05rem', marginBottom: '0.75rem' }}>
-                7. Você gostaria de participar de futuras conversas comunitárias sobre sua região?
-              </label>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                  gap: '0.65rem'
-                }}
-              >
-                {[
-                  { value: 'sim', label: 'Sim, presencialmente' },
-                  { value: 'apenas_online', label: 'Apenas em formato online' },
-                  { value: 'nao', label: 'Não no momento' }
-                ].map((item) => {
-                  const isSelected = participateCircles === item.value;
-                  return (
-                    <button
-                      type="button"
-                      key={item.value}
-                      onClick={() => setParticipateCircles(item.value as any)}
-                      style={{
-                        padding: '0.8rem 1rem',
-                        borderRadius: 'var(--radius-lg)',
-                        border: isSelected ? '1.5px solid var(--color-black)' : '1px solid var(--color-border)',
-                        backgroundColor: isSelected ? 'var(--color-black)' : 'var(--color-surface)',
-                        color: isSelected ? '#FFFFFF' : 'var(--color-black)',
-                        fontSize: '0.875rem',
-                        fontWeight: isSelected ? 600 : 500,
-                        cursor: 'pointer',
-                        transition: 'var(--transition)',
-                        textAlign: 'center'
-                      }}
-                    >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '0.4rem', marginLeft: '1.95rem' }}>
+                Mesmo que você preencha dados de contato opcionais abaixo, eles permanecerão em sigilo e nunca serão exibidos publicamente.
+              </p>
             </div>
 
             {/* Optional Contact (Explicit Consent & Purpose) */}
@@ -594,9 +607,9 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                 </h4>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '1.25rem', lineHeight: 1.55 }}>
-                Se desejar ser informado quando as propostas do seu bairro avançarem ou for convidado para rodas de
-                conversa, informe seu contato. Os dados de contato <strong>nunca serão divulgados publicamente</strong> nem
-                utilizados para fins comerciais ou eleitorais partidários.
+                Se desejar ser informado quando os estudos técnicos avançarem ou for convidado para rodas de conversa
+                comunitárias sobre o seu bairro, informe seu contato. Os dados de contato <strong>nunca serão divulgados publicamente</strong> nem
+                utilizados para propaganda eleitoral ou fins comerciais.
               </p>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }} className="contact-grid">
@@ -655,8 +668,8 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                   style={{ accentColor: 'var(--color-black)', marginTop: '0.2rem', width: '1.15rem', height: '1.15rem' }}
                 />
                 <span>
-                  Concordo com os princípios de participação voluntária e autorizo a agregação estatística anônima das
-                  minhas respostas para a formulação de propostas de interesse público de Itanhaém, em conformidade com a{' '}
+                  Concordo com os princípios de participação voluntária e autorizo o tratamento cívico e anônimo do meu
+                  relato para o banco de dados do Escuta Itanhaém, em conformidade com a{' '}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -716,7 +729,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({
                 }}
                 id="submit-consultation-btn"
               >
-                <span>{isSubmitting ? 'Registrando contribuição...' : 'Enviar Minha Contribuição'}</span>
+                <span>{isSubmitting ? 'Registrando relato...' : 'Enviar Relato Cívico'}</span>
                 <span className="btn-icon-wrapper">
                   <Send size={16} />
                 </span>

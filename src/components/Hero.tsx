@@ -81,7 +81,7 @@ export const Hero: React.FC = () => {
               , juntos.
             </h1>
 
-            {/* Subtitle - Exact prompt copy */}
+            {/* Subtitle - Exact current phase copy */}
             <p
               style={{
                 marginTop: '1.5rem',
@@ -91,7 +91,8 @@ export const Hero: React.FC = () => {
                 maxWidth: '38rem'
               }}
             >
-              Um espaço para ouvir os moradores, entender as prioridades de cada bairro e transformar problemas reais em propostas fundamentadas.
+              Fase atual: diagnóstico cívico nos bairros, escuta ativa dos moradores e pesquisa de propostas realistas
+              para Itanhaém, com foco em transparência, fiscalização e competência municipal.
             </p>
 
             {/* Social Trust / Civic Badges */}
@@ -138,7 +139,7 @@ export const Hero: React.FC = () => {
               >
                 <Shield size={15} color="var(--emerald)" />
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-black)' }}>
-                  100% Livre de Partidarismo Oficial
+                  Iniciativa Cívica Independente
                 </span>
               </div>
             </div>
@@ -293,10 +294,10 @@ export const Hero: React.FC = () => {
                     </span>
                   </div>
                   <div className="font-display" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFFFFF' }}>
-                    10 Áreas
+                    12 Temas
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.55)', marginTop: '0.2rem' }}>
-                    Prioridades temáticas
+                    Catálogo municipal
                   </div>
                 </div>
 
